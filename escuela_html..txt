@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Juego Interactivo</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #gameContainer {
+      width: 100%;
+      max-width: 500px;
+      height: 100%;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      transition: background 1s ease;
+    }
+
+    #character {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      transition: all 0.5s ease;
+    }
+
+    #dialogueBox {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: rgba(0,0,0,0.7);
+      padding: 15px;
+      text-align: center;
+      font-size: 16px;
+      border-top: 2px solid #f39c12;
+    }
+
+    #playerInput {
+      width: 70%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      margin-right: 5px;
+    }
+
+    #sendBtn {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      background-color: #f39c12;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #sendBtn:hover {
+      background-color: #e67e22;
+    }
+
+    .btn {
+      margin: 5px;
+      padding: 10px 15px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      background-color: #f39c12;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #e67e22;
+    }
+  </style>
+</head>
+<body>
+  <div id="gameContainer">
+    <img id="character" src="https://i.postimg.cc/DfXxw2Mn/character.png" alt="Personaje">
+    <div id="dialogueBox">
+      <p id="dialogue">¡Bienvenido al colegio! ¿Qué quieres hacer?</p>
+      <div id="buttonsContainer">
+        <button class="btn" onclick="accion('hablar')">Hablar con alguien</button>
+        <button class="btn" onclick="accion('pasillo')">Ir al pasillo</button>
+        <button class="btn" onclick="accion('salon')">Ir al salón</button>
+      </div>
+      <div id="chatContainer" style="margin-top:10px; display:none;">
+        <input type="text" id="playerInput" placeholder="Escribe lo que quieres decir...">
+        <button id="sendBtn" onclick="enviarMensaje()">Enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const escenas = {
+      colegio: {
+        fondo: "https://i.postimg.cc/3wXrtnY2/school-hall.jpg",
+        dialogo: "¡Bienvenido al colegio! ¿Qué quieres hacer?",
+      },
+      pasillo: {
+        fondo: "https://i.postimg.cc/3J5FqK7p/hallway.jpg",
+        dialogo: "Estás en el pasillo. Puedes ver a otros estudiantes caminando.",
+      },
+      salon: {
+        fondo: "https://i.postimg.cc/J4V9R9sq/classroom.jpg",
+        dialogo: "Estás en el salón. El profesor te mira mientras entras.",
+      }
+    };
+
+    let escenaActual = "colegio";
+    const gameContainer = document.getElementById("gameContainer");
+    const character = document.getElementById("character");
+    const dialogue = document.getElementById("dialogue");
+    const chatContainer = document.getElementById("chatContainer");
+    const playerInput = document.getElementById("playerInput");
+
+    function cambiarEscena(nombreEscena) {
+      const escena = escenas[nombreEscena];
+      gameContainer.style.backgroundImage = `url('${escena.fondo}')`;
+      dialogue.textContent = escena.dialogo;
+      escenaActual = nombreEscena;
+
+      // Animación del personaje
+      character.style.transform = "translateX(-50%) translateY(-10px)";
+      setTimeout(() => {
+        character.style.transform = "translateX(-50%) translateY(0)";
+      }, 500);
+
+      // Ocultar chat al cambiar de escena
+      chatContainer.style.display = "none";
+    }
+
+    function accion(accionNombre) {
+      if (accionNombre === "hablar") {
+        dialogue.textContent = "Escribe lo que quieres decir:";
+        chatContainer.style.display = "block";
+      } else if (accionNombre === "pasillo") {
+        cambiarEscena("pasillo");
+      } else if (accionNombre === "salon") {
+        cambiarEscena("salon");
+      }
+    }
+
+    function enviarMensaje() {
+      const mensaje = playerInput.value.trim();
+      if (mensaje === "") {
+        alert("Escribe algo antes de enviar.");
+        return;
+      }
+
+      // Muestra lo que el jugador dijo
+      dialogue.textContent = "Tú: " + mensaje;
+
+      // Respuesta automática del personaje con interacción simple
+      setTimeout(() => {
+        dialogue.textContent = "Compañero: ¡Qué interesante! 😊";
+      }, 1000);
+
+      playerInput.value = "";
+    }
+
+    // Inicializar
+    cambiarEscena("colegio");
+  </script>
+</body>
+</html>
